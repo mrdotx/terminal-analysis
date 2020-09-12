@@ -3,7 +3,7 @@
 # path:       /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author:     klassiker [mrdotx]
 # github:     https://github.com/mrdotx/terminal-colors
-# date:       2020-09-11T19:28:11+0200
+# date:       2020-09-12T15:21:37+0200
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
@@ -38,7 +38,7 @@ else
             ;;
         *)
             printf "%s\n" "$help"
-            exit 0
+            exit 1
             ;;
     esac
 fi
@@ -145,6 +145,7 @@ output() {
 [ -z "${option##*h*}" ] \
     && head=0
 
+# function | header title
 output "b" "base_color" "base colors"
 output "c" "color" "color palette"
 output "g" "greyscale" "greyscale"
