@@ -3,7 +3,7 @@
 # path:       /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author:     klassiker [mrdotx]
 # github:     https://github.com/mrdotx/terminal-colors
-# date:       2020-09-12T15:21:37+0200
+# date:       2020-10-19T19:33:17+0200
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
@@ -24,9 +24,10 @@ help="$script [-h/--help] -- script to show terminal colors
     $script -t
     $script -bnh"
 
-if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-    printf "%s\n" "$help"
-    exit 0
+if [ "$1" = "-h" ] \
+    || [ "$1" = "--help" ]; then
+        printf "%s\n" "$help"
+        exit 0
 fi
 
 if [ $# -eq 0 ]; then
@@ -87,7 +88,8 @@ color() {
             fi
             column_counter=0
             printf "\n"
-        elif [ $((column_counter%6)) -eq 0 ] && [ $((start_column+30)) -le "$end_column" ]; then
+        elif [ $((column_counter%6)) -eq 0 ] \
+            && [ $((start_column+30)) -le "$end_column" ]; then
                 start_column=$((start_column+30))
         fi
     done
