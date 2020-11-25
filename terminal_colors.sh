@@ -1,9 +1,9 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 # path:       /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author:     klassiker [mrdotx]
 # github:     https://github.com/mrdotx/terminal-colors
-# date:       2020-10-19T19:33:17+0200
+# date:       2020-11-25T20:58:53+0100
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
