@@ -3,60 +3,45 @@
 # path:       /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author:     klassiker [mrdotx]
 # github:     https://github.com/mrdotx/terminal-colors
-# date:       2020-11-25T20:58:53+0100
+# date:       2020-11-26T23:22:26+0100
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
   Usage:
-    $script [-bcgtnh]
+    $script [-n]
 
   Settings:
-    without given settings will show all informations
-    [-b] = base colors
-    [-c] = color palette
-    [-g] = greyscale
-    [-t] = true colors
-    [-n] = hide numbers
-    [-h] = hide header
+    [-n] = hide numbers/pattern
 
   Example:
-    $script -bcg
-    $script -t
-    $script -bnh"
-
-if [ "$1" = "-h" ] \
-    || [ "$1" = "--help" ]; then
-        printf "%s\n" "$help"
-        exit 0
-fi
-
-if [ $# -eq 0 ]; then
-    option="bcgt"
-else
-    case "$1" in
-        -*)
-            option="$1"
-            ;;
-        *)
-            printf "%s\n" "$help"
-            exit 1
-            ;;
-    esac
-fi
+    $script
+    $script -n"
 
 plot() {
-    if [ -z "$num" ]; then
-        printf "\033[48;5;%sm %3d \033[0m" "$1" "$1"
+    if [ "$1" -ge "$2" ] \
+        && [ "$1" -le "$3" ] \
+        || [ "$1" -eq 7 ]; then
+            color=30
     else
-        printf "\033[48;5;%sm     \033[0m" "$1"
+        color=37
     fi
+
+    case "$4" in
+        1)
+            printf "\033[48;5;%sm\033[1;%sm %3d \033[0m" "$1" "$color" "$1"
+            ;;
+        0)
+            printf "\033[48;5;%sm     \033[0m" "$1"
+            ;;
+    esac
 }
 
 base_color() {
     start_column=0
+    color_toggle=9
     end_column=15
     while [ "$start_column" -le "$end_column" ]; do
-        plot "$start_column"
+        plot "$start_column" "$color_toggle" "$end_column" "$1"
         n=$((start_column-7))
         if [ $((n%8)) -eq 0 ]; then
                 printf "\n"
@@ -67,6 +52,7 @@ base_color() {
 
 color() {
     start_column=16
+    color_toggle=124
     end_column=231
     block=$(($(tput cols)/30))
     if [ "$block" -ge 6 ]; then
@@ -77,7 +63,7 @@ color() {
     column_num=$((block*6))
     column_counter=0
     while [ "$start_column" -le "$end_column" ]; do
-        plot "$start_column"
+        plot "$start_column" "$color_toggle" "$end_column" "$1"
         start_column=$((start_column+1))
         column_counter=$((column_counter+1))
         if [ "$column_counter" -eq "$column_num" ]; then
@@ -97,6 +83,7 @@ color() {
 
 greyscale() {
     start_column=232
+    color_toggle=244
     end_column=255
     block=$(($(tput cols)/30))
     if [ "$block" -ge 4 ]; then
@@ -105,7 +92,7 @@ greyscale() {
         block=2
     fi
     while [ "$start_column" -le "$end_column" ]; do
-        plot "$start_column"
+        plot "$start_column" "$color_toggle" "$end_column" "$1"
         n=$((start_column-15))
         m=$((block*6))
         if [ $((n%m)) -eq 0 ]; then
@@ -116,8 +103,7 @@ greyscale() {
 }
 
 true_color() {
-    awk -v column_quantity=$(($(tput cols)*24)) 'BEGIN{
-        symbols="|_|¯";
+    awk -v pattern="$1" -v column_quantity="$(($(tput cols)*24))" 'BEGIN{
         for (column = 0; column<column_quantity; column++) {
             r = 255-(column*255/column_quantity);
             g = (column*510/column_quantity);
@@ -125,30 +111,37 @@ true_color() {
             if (g>255) g = 510-g;
             printf "\033[48;2;%d;%d;%dm", r,g,b;
             printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
-            printf "%s\033[0m", substr(symbols,column%4+1,1);
+            printf "%s\033[0m", substr(pattern,column%length(pattern)+1,1);
         }
         printf "\n";
     }'
 }
 
 output() {
-    [ -z "${option##*$1*}" ] \
-    && if [ -z "$head" ]; then
-        printf ":: %s\n" "$3"
-        "$2"
-    else
-        "$2"
-    fi
-    return 0
+    printf "%s\n" ":: base colors"
+    base_color "$1"
+    printf "%s\n" ":: color palette"
+    color "$1"
+    printf "%s\n" ":: greyscale"
+    greyscale "$1"
+    printf "%s\n" ":: true colors"
+    true_color "$2"
 }
 
-[ -z "${option##*n*}" ] \
-    && num=0
-[ -z "${option##*h*}" ] \
-    && head=0
-
-# function | header title
-output "b" "base_color" "base colors"
-output "c" "color" "color palette"
-output "g" "greyscale" "greyscale"
-output "t" "true_color" "true colors"
+if [ $# -eq 0 ]; then
+    output "1" "|_|¯"
+else
+    case "$1" in
+        -h | --help)
+            printf "%s\n" "$help"
+            exit 0
+            ;;
+        -n)
+            output "0" " "
+            ;;
+        *)
+            printf "%s\n" "$help"
+            exit 1
+            ;;
+    esac
+fi
