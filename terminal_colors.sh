@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-colors
-# date:   2021-01-15T14:05:09+0100
+# date:   2021-03-10T11:49:53+0100
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
@@ -102,7 +102,7 @@ greyscale() {
 }
 
 true_color() {
-    awk -v pattern="$1" -v column_quantity="$(($(tput cols)*24))" 'BEGIN{
+    awk -v pattern="$1" -v column_quantity="$(($(tput cols)*12))" 'BEGIN{
         for (column = 0; column<column_quantity; column++) {
             r = 255-(column*255/column_quantity);
             g = (column*510/column_quantity);
