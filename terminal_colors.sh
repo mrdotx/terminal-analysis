@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-colors
-# date:   2021-06-25T12:00:55+0200
+# date:   2022-05-10T10:32:55+0200
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
@@ -42,9 +42,8 @@ base_color() {
     while [ "$start_column" -le "$end_column" ]; do
         plot "$start_column" "$color_toggle" "$1"
         n=$((start_column-7))
-        if [ $((n%8)) -eq 0 ]; then
-                printf "\n"
-            fi
+        [ $((n%8)) -eq 0 ] \
+            && printf "\n"
         start_column=$((start_column+1))
     done
 }
@@ -67,10 +66,9 @@ color() {
         column_counter=$((column_counter+1))
         if [ "$column_counter" -eq "$column_num" ]; then
             n=$((start_column-16))
-            if [ $((n%36)) -ne 0 ]; then
-                n=$((block-1))
-                start_column=$((start_column-n*36))
-            fi
+            [ $((n%36)) -ne 0 ] \
+                && n=$((block-1)) \
+                && start_column=$((start_column-n*36))
             column_counter=0
             printf "\n"
         elif [ $((column_counter%6)) -eq 0 ] \
@@ -94,9 +92,8 @@ greyscale() {
         plot "$start_column" "$color_toggle" "$1"
         n=$((start_column-15))
         m=$((block*6))
-        if [ $((n%m)) -eq 0 ]; then
-                printf "\n"
-            fi
+        [ $((n%m)) -eq 0 ] \
+            && printf "\n"
         start_column=$((start_column+1))
     done
 }
