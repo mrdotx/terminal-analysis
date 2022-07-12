@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-colors
-# date:   2022-05-10T10:32:55+0200
+# date:   2022-07-12T11:13:28+0200
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
@@ -41,10 +41,10 @@ base_color() {
     end_column=15
     while [ "$start_column" -le "$end_column" ]; do
         plot "$start_column" "$color_toggle" "$1"
-        n=$((start_column-7))
-        [ $((n%8)) -eq 0 ] \
+        n=$((start_column - 7))
+        [ $((n % 8)) -eq 0 ] \
             && printf "\n"
-        start_column=$((start_column+1))
+        start_column=$((start_column + 1))
     done
 }
 
@@ -52,28 +52,28 @@ color() {
     start_column=16
     color_toggle=124
     end_column=231
-    block=$(($(tput cols)/30))
+    block=$(($(tput cols) / 30))
     if [ "$block" -ge 6 ]; then
         block=6
     elif [ "$block" -ge 3 ]; then
         block=3
     fi
-    column_num=$((block*6))
+    column_num=$((block * 6))
     column_counter=0
     while [ "$start_column" -le "$end_column" ]; do
         plot "$start_column" "$color_toggle" "$1"
-        start_column=$((start_column+1))
-        column_counter=$((column_counter+1))
+        start_column=$((start_column + 1))
+        column_counter=$((column_counter + 1))
         if [ "$column_counter" -eq "$column_num" ]; then
-            n=$((start_column-16))
-            [ $((n%36)) -ne 0 ] \
-                && n=$((block-1)) \
-                && start_column=$((start_column-n*36))
+            n=$((start_column - 16))
+            [ $((n % 36)) -ne 0 ] \
+                && n=$((block - 1)) \
+                && start_column=$((start_column - n * 36))
             column_counter=0
             printf "\n"
-        elif [ $((column_counter%6)) -eq 0 ] \
-            && [ $((start_column+30)) -le "$end_column" ]; then
-                start_column=$((start_column+30))
+        elif [ $((column_counter % 6)) -eq 0 ] \
+            && [ $((start_column + 30)) -le "$end_column" ]; then
+                start_column=$((start_column + 30))
         fi
     done
 }
@@ -82,7 +82,7 @@ greyscale() {
     start_column=232
     color_toggle=244
     end_column=255
-    block=$(($(tput cols)/30))
+    block=$(($(tput cols) / 30))
     if [ "$block" -ge 4 ]; then
         block=4
     elif [ "$block" -ge 2 ]; then
@@ -90,16 +90,16 @@ greyscale() {
     fi
     while [ "$start_column" -le "$end_column" ]; do
         plot "$start_column" "$color_toggle" "$1"
-        n=$((start_column-15))
-        m=$((block*6))
-        [ $((n%m)) -eq 0 ] \
+        n=$((start_column - 15))
+        m=$((block * 6))
+        [ $((n % m)) -eq 0 ] \
             && printf "\n"
-        start_column=$((start_column+1))
+        start_column=$((start_column + 1))
     done
 }
 
 true_color() {
-    awk -v pattern="$1" -v column_quantity="$(($(tput cols)*12))" 'BEGIN{
+    awk -v pattern="$1" -v column_quantity="$(($(tput cols) * 12))" 'BEGIN{
         for (column = 0; column<column_quantity; column++) {
             r = 255-(column*255/column_quantity);
             g = (column*510/column_quantity);
