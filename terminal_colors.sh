@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-colors
-# date:   2023-04-22T17:17:38+0200
+# date:   2023-04-22T19:33:25+0200
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
@@ -130,6 +130,10 @@ true_color() {
 }
 
 output() {
+    [ "$(tput cols)" -lt 30 ] \
+        && printf "sorry, the window must be at least 30 columns wide\n" \
+        && exit 1
+
     printf "%s\n" ":: base colors"
     base_color "$1"
     printf "%s\n" ":: color palette"
