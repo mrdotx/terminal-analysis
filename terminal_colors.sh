@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-colors
-# date:   2022-07-12T11:13:28+0200
+# date:   2023-04-22T17:17:38+0200
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
@@ -99,18 +99,34 @@ greyscale() {
 }
 
 true_color() {
-    awk -v pattern="$1" -v column_quantity="$(($(tput cols) * 12))" 'BEGIN{
-        for (column = 0; column<column_quantity; column++) {
-            r = 255-(column*255/column_quantity);
-            g = (column*510/column_quantity);
-            b = (column*255/column_quantity);
-            if (g>255) g = 510-g;
-            printf "\033[48;2;%d;%d;%dm", r,g,b;
-            printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
-            printf "%s\033[0m", substr(pattern,column%length(pattern)+1,1);
-        }
-        printf "\n";
-    }'
+    case $1 in
+        1)
+            pattern="|_|¯"
+            ;;
+        0)
+            pattern="    "
+            ;;
+    esac
+    column_quantity="$(($(tput cols) * 3))"
+    while [ "${column:-0}" -lt "$column_quantity" ]; do
+        red=$((255 - (column * 255 / column_quantity)))
+        green=$((column * 510 / column_quantity))
+        blue=$((column * 255 / column_quantity))
+        [ $green -gt 255 ] \
+            && green=$((510 - green))
+        printf "\033[48;2;%d;%d;%dm" \
+            "$red" \
+            "$green" \
+            "$blue"
+        printf "\033[38;2;%d;%d;%dm" \
+            "$((255 - red))" \
+            "$((255 - green))" \
+            "$((255 - blue))"
+        printf "%s\033[0m" \
+            "$pattern"
+        column=$((column + 1))
+    done
+    printf "\n"
 }
 
 output() {
@@ -121,11 +137,11 @@ output() {
     printf "%s\n" ":: greyscale"
     greyscale "$1"
     printf "%s\n" ":: true colors"
-    true_color "$2"
+    true_color "$1"
 }
 
 if [ $# -eq 0 ]; then
-    output "1" "|_|¯"
+    output 1
 else
     case "$1" in
         -h | --help)
@@ -133,7 +149,7 @@ else
             exit 0
             ;;
         -n)
-            output "0" " "
+            output 0
             ;;
         *)
             printf "%s\n" "$help"
