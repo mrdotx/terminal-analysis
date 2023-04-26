@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-colors
-# date:   2023-04-22T19:33:25+0200
+# date:   2023-04-26T13:30:08+0200
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
@@ -101,13 +101,13 @@ greyscale() {
 true_color() {
     case $1 in
         1)
-            pattern="|_|¯"
+            pattern="|_|¯|_|¯|_|¯"
             ;;
         0)
-            pattern="    "
+            pattern="            "
             ;;
     esac
-    column_quantity="$(($(tput cols) * 3))"
+    column_quantity="$(tput cols)"
     while [ "${column:-0}" -lt "$column_quantity" ]; do
         red=$((255 - (column * 255 / column_quantity)))
         green=$((column * 510 / column_quantity))
