@@ -3,7 +3,11 @@
 # path:   /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-colors
-# date:   2023-04-26T13:30:08+0200
+# date:   2024-01-04T10:19:40+0100
+
+# speed up script and avoid language problems by using standard c
+LC_ALL=C
+LANG=C
 
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
@@ -17,16 +21,22 @@ help="$script [-h/--help] -- script to show terminal colors
     $script
     $script -n"
 
+column_quantity="$(tput cols)"
+block_quantity=$((column_quantity / 30))
+
 plot() {
     case "$3" in
         1)
-            if [ "$1" -eq 7 ] \
-                || [ "$1" -ge "$2" ]; then
+            case "$1" in
+                7)
                     color=30
-            else
-                color=37
-            fi
-
+                    ;;
+                *)
+                    [ "$1" -ge "$2" ] \
+                        && color=30 \
+                        || color=37
+                    ;;
+            esac
             printf "\033[48;5;%sm\033[1;%sm %3d \033[0m" "$1" "$color" "$1"
             ;;
         0)
@@ -52,12 +62,17 @@ color() {
     start_column=16
     color_toggle=124
     end_column=231
-    block=$(($(tput cols) / 30))
-    if [ "$block" -ge 6 ]; then
-        block=6
-    elif [ "$block" -ge 3 ]; then
-        block=3
-    fi
+    case $block_quantity in
+        1 | 2 | 3)
+            block=$block_quantity
+            ;;
+        4 | 5)
+            block=3
+            ;;
+        *)
+            block=6
+            ;;
+    esac
     column_num=$((block * 6))
     column_counter=0
     while [ "$start_column" -le "$end_column" ]; do
@@ -82,17 +97,22 @@ greyscale() {
     start_column=232
     color_toggle=244
     end_column=255
-    block=$(($(tput cols) / 30))
-    if [ "$block" -ge 4 ]; then
-        block=4
-    elif [ "$block" -ge 2 ]; then
-        block=2
-    fi
+    case $block_quantity in
+        1 | 2)
+            block=$block_quantity
+            ;;
+        3)
+            block=2
+            ;;
+        *)
+            block=4
+            ;;
+    esac
+    column_num=$((block * 6))
     while [ "$start_column" -le "$end_column" ]; do
         plot "$start_column" "$color_toggle" "$1"
         n=$((start_column - 15))
-        m=$((block * 6))
-        [ $((n % m)) -eq 0 ] \
+        [ $((n % column_num)) -eq 0 ] \
             && printf "\n"
         start_column=$((start_column + 1))
     done
@@ -107,7 +127,6 @@ true_color() {
             pattern="            "
             ;;
     esac
-    column_quantity="$(tput cols)"
     while [ "${column:-0}" -lt "$column_quantity" ]; do
         red=$((255 - (column * 255 / column_quantity)))
         green=$((column * 510 / column_quantity))
@@ -130,34 +149,37 @@ true_color() {
 }
 
 output() {
-    [ "$(tput cols)" -lt 30 ] \
-        && printf "sorry, the window must be at least 30 columns wide\n" \
+    [ "$column_quantity" -lt 40 ] \
+        && printf "sorry, the window must be at least 40 columns wide\n" \
         && exit 1
 
-    printf "%s\n" ":: base colors"
+    printf ":: base colors\n"
     base_color "$1"
-    printf "%s\n" ":: color palette"
+    printf ":: color palette\n"
     color "$1"
-    printf "%s\n" ":: greyscale"
+    printf ":: greyscale\n"
     greyscale "$1"
-    printf "%s\n" ":: true colors"
+    printf ":: true colors\n"
     true_color "$1"
 }
 
-if [ $# -eq 0 ]; then
-    output 1
-else
-    case "$1" in
-        -h | --help)
-            printf "%s\n" "$help"
-            exit 0
-            ;;
-        -n)
-            output 0
-            ;;
-        *)
-            printf "%s\n" "$help"
-            exit 1
-            ;;
-    esac
-fi
+case $# in
+    0)
+        output 1
+        ;;
+    *)
+        case "$1" in
+            -h | --help)
+                printf "%s\n" "$help"
+                exit 0
+                ;;
+            -n)
+                output 0
+                ;;
+            *)
+                printf "%s\n" "$help"
+                exit 1
+                ;;
+        esac
+        ;;
+esac
