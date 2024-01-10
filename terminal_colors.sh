@@ -1,14 +1,15 @@
 #!/bin/sh
 
-# path:   /home/klassiker/.local/share/repos/terminal-colors/terminal_colors.sh
+# path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_colors.sh
 # author: klassiker [mrdotx]
-# github: https://github.com/mrdotx/terminal-colors
-# date:   2024-01-04T10:19:40+0100
+# github: https://github.com/mrdotx/terminal-analysis
+# date:   2024-01-10T10:47:07+0100
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C
 LANG=C
 
+# help
 script=$(basename "$0")
 help="$script [-h/--help] -- script to show terminal colors
   Usage:
@@ -22,7 +23,7 @@ help="$script [-h/--help] -- script to show terminal colors
     $script -n"
 
 column_quantity="$(tput cols)"
-block_quantity=$((column_quantity / 30))
+block_quantity="$((column_quantity / 30))"
 
 plot() {
     case "$3" in
