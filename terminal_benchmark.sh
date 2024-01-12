@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_benchmark.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-analysis
-# date:   2024-01-10T11:30:38+0100
+# date:   2024-01-11T19:54:13+0100
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C
@@ -65,31 +65,34 @@ output_reading() {
 }
 
 # ansi seq chars
-re="\033[0m"
-bo="\033[1m"
-ul="\033[4m"
-in="\033[7m"
 r="\033[31m"
 g="\033[32m"
 y="\033[33m"
 b="\033[34m"
 m="\033[35m"
 c="\033[36m"
-wb="\033[47m"
+ansi_colors="$r red $g green $y yellow $b blue $m magenta $c cyan "
+re="\033[0m"
+bo="\033[1m"
+it="\033[3m"
+ul="\033[4m"
+in="\033[7m"
 ansi_string="\
-${bo}bold$re ${in}invert$re ${ul}underline$re
-$bo$in${ul}bold & invert & underline$re
-$r red $g green $y yellow $b blue $m magenta $c cyan $re
-$bo$ul$r red $g green $y yellow $b blue $m magenta $c cyan $re
-$in$wb$r red $g green $y yellow $b blue $m magenta $c cyan $re
-$bo$in$ul$wb$r red $g green $y yellow $b blue $m magenta $c cyan $re
-$in$r red $g green $y yellow $b blue $m magenta $c cyan $re
-$bo$in$ul$r red $g green $y yellow $b blue $m magenta $c cyan $re
-$in$r red $g green $y yellow $b blue $m magenta $c cyan $re
+$bo$it$ul${in}bold & italic & underline & invert$re
+${bo}bold$re ${it}italic$re ${ul}underline$re ${in}invert$re
+$in$ansi_colors$re
+$ansi_colors$re
+$in$bo$ansi_colors$re
+$bo$ansi_colors$re
+$in$it$ansi_colors$re
+$it$ansi_colors$re
+$in$ul$ansi_colors$re
+$ul$ansi_colors$re
 "
+ansi_num=$((8 * 41 + 62))
 output_reading "$ansi_string"
 ansi_duration=$(calc "$end - $start")
-ansi_chars=$(calc "$((7 * 41 + 46)) * $outputs / $ansi_duration")
+ansi_chars=$(calc "$ansi_num * $outputs / $ansi_duration")
 
 # ascii chars
 ascii_string=$(line_fill "$ascii" 1)
@@ -104,7 +107,7 @@ unicode_duration=$(calc "$end - $start")
 unicode_chars=$(calc "$((columns / 2)) * $outputs / $unicode_duration")
 
 # mixed chars
-mixed_string=$(line_fill "$bo$in$ascii$unicode$re" 3)
+mixed_string=$(line_fill "$bo$in$r$ascii$unicode$re" 3)
 output_reading "$mixed_string\n"
 mixed_duration=$(calc "$end - $start")
 mixed_chars=$(calc "$((columns * 2 / 3)) * $outputs / $mixed_duration")
@@ -112,7 +115,7 @@ mixed_chars=$(calc "$((columns * 2 / 3)) * $outputs / $mixed_duration")
 # results
 tput reset
 printf ":: %s ansi seq chars\n%b" \
-    "$((7 * 41 + 46))" \
+    "$ansi_num" \
     "$ansi_string"
 printf ":: %s(+-1) ascii chars\n%b\n" \
     "$columns" \
