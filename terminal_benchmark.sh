@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_benchmark.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-analysis
-# date:   2024-01-11T19:54:13+0100
+# date:   2024-05-09T08:29:29+0200
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C
@@ -12,8 +12,8 @@ LANG=C
 #config
 ascii="x"
 unicode="😀"
-columns="$(tput cols)"
-lines="$(tput lines)"
+columns="$(stty size | cut -d' ' -f2)"
+lines="$(stty size | cut -d' ' -f1)"
 
 [ "$1" -ge 1 ] > /dev/null 2>&1 \
     && outputs="$1" \
