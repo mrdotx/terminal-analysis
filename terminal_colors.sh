@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_colors.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-analysis
-# date:   2024-01-10T10:47:07+0100
+# date:   2024-05-09T08:30:22+0200
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C
@@ -22,36 +22,33 @@ help="$script [-h/--help] -- script to show terminal colors
     $script
     $script -n"
 
-column_quantity="$(tput cols)"
+column_quantity="$(stty size | cut -d' ' -f2)"
 block_quantity="$((column_quantity / 30))"
 
 plot() {
-    case "$3" in
+    case "$2" in
         1)
             case "$1" in
-                7)
+                0 | 8 | 16 | 52 | 88 | 124 | 160 | 196 | 232)
+                    color=37
+                    ;;
+                7 | 9 | 34 | 70 | 106 | 142 | 178 | 214 | 244)
                     color=30
                     ;;
-                *)
-                    [ "$1" -ge "$2" ] \
-                        && color=30 \
-                        || color=37
-                    ;;
             esac
-            printf "\033[48;5;%sm\033[1;%sm %3d \033[0m" "$1" "$color" "$1"
+            printf "\033[48;5;%dm\033[1;%dm %3d \033[0m" "$1" "$color" "$1"
             ;;
         0)
-            printf "\033[48;5;%sm     \033[0m" "$1"
+            printf "\033[48;5;%dm     \033[0m" "$1"
             ;;
     esac
 }
 
 base_color() {
     start_column=0
-    color_toggle=9
     end_column=15
     while [ "$start_column" -le "$end_column" ]; do
-        plot "$start_column" "$color_toggle" "$1"
+        plot "$start_column" "$1"
         n=$((start_column - 7))
         [ $((n % 8)) -eq 0 ] \
             && printf "\n"
@@ -61,7 +58,6 @@ base_color() {
 
 color() {
     start_column=16
-    color_toggle=124
     end_column=231
     case $block_quantity in
         1 | 2 | 3)
@@ -77,7 +73,7 @@ color() {
     column_num=$((block * 6))
     column_counter=0
     while [ "$start_column" -le "$end_column" ]; do
-        plot "$start_column" "$color_toggle" "$1"
+        plot "$start_column" "$1"
         start_column=$((start_column + 1))
         column_counter=$((column_counter + 1))
         if [ "$column_counter" -eq "$column_num" ]; then
@@ -96,7 +92,6 @@ color() {
 
 greyscale() {
     start_column=232
-    color_toggle=244
     end_column=255
     case $block_quantity in
         1 | 2)
@@ -111,7 +106,7 @@ greyscale() {
     esac
     column_num=$((block * 6))
     while [ "$start_column" -le "$end_column" ]; do
-        plot "$start_column" "$color_toggle" "$1"
+        plot "$start_column" "$1"
         n=$((start_column - 15))
         [ $((n % column_num)) -eq 0 ] \
             && printf "\n"
