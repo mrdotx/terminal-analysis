@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_benchmark.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-analysis
-# date:   2024-05-09T08:29:29+0200
+# date:   2024-05-16T09:54:13+0200
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C
@@ -113,8 +113,7 @@ mixed_duration=$(calc "$end - $start")
 mixed_chars=$(calc "$((columns * 2 / 3)) * $outputs / $mixed_duration")
 
 # results
-tput reset
-printf ":: %s ansi seq chars\n%b" \
+printf "\033c:: %s ansi seq chars\n%b" \
     "$ansi_num" \
     "$ansi_string"
 printf ":: %s(+-1) ascii chars\n%b\n" \
