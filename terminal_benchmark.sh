@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_benchmark.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-analysis
-# date:   2024-05-16T09:54:13+0200
+# date:   2024-07-12T08:14:45+0200
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C
@@ -12,8 +12,10 @@ LANG=C
 #config
 ascii="x"
 unicode="😀"
-columns="$(stty size | cut -d' ' -f2)"
 lines="$(stty size | cut -d' ' -f1)"
+columns="$(stty size | cut -d' ' -f2)"
+columns_unicode="$((columns / 2))"
+columns_mixed="$((columns * 2 / 3))"
 
 [ "$1" -ge 1 ] > /dev/null 2>&1 \
     && outputs="$1" \
@@ -47,7 +49,7 @@ esac
 
 # helper functions
 calc() {
-    printf "%s\n" "$*" | bc
+    printf "%s\n" "$*" | bc -l
 }
 
 line_fill() {
@@ -104,46 +106,27 @@ ascii_chars=$(calc "$columns * $outputs / $ascii_duration")
 unicode_string=$(line_fill "$unicode" 2)
 output_reading "$unicode_string\n"
 unicode_duration=$(calc "$end - $start")
-unicode_chars=$(calc "$((columns / 2)) * $outputs / $unicode_duration")
+unicode_chars=$(calc "$columns_unicode * $outputs / $unicode_duration")
 
 # mixed chars
 mixed_string=$(line_fill "$bo$in$r$ascii$unicode$re" 3)
 output_reading "$mixed_string\n"
 mixed_duration=$(calc "$end - $start")
-mixed_chars=$(calc "$((columns * 2 / 3)) * $outputs / $mixed_duration")
+mixed_chars=$(calc "$columns_mixed * $outputs / $mixed_duration")
 
 # results
-printf "\033c:: %s ansi seq chars\n%b" \
-    "$ansi_num" \
-    "$ansi_string"
-printf ":: %s(+-1) ascii chars\n%b\n" \
-    "$columns" \
-    "$ascii_string"
-printf ":: %s(+-1) unicode chars\n%b\n" \
-    "$((columns / 2))" \
-    "$unicode_string"
-printf ":: %s(+-1) mixed chars\n%b\n\n" \
-    "$((columns * 2 / 3))" \
-    "$mixed_string"
+printf "\033c:: %s ansi seq chars\n%b" "$ansi_num" "$ansi_string"
+printf ":: %s(+-1) ascii chars\n%b\n" "$columns" "$ascii_string"
+printf ":: %s(+-1) unicode chars\n%b\n" "$columns_unicode" "$unicode_string"
+printf ":: %s(+-1) mixed chars\n%b\n\n" "$columns_mixed" "$mixed_string"
 
-printf ":: %s terminal outputs per section\n" \
-    "$i"
-printf "%s;%.3f;%d\n%s;%.3f;%d\n%s;%.3f;%d\n%s;%.3f;%d\n%s;%s;%s\n%s;%.3f;%d\n" \
-    "ansi seq" \
-    "$ansi_duration" \
-    "$ansi_chars" \
-    "ascii" \
-    "$ascii_duration" \
-    "$ascii_chars" \
-    "unicode" \
-    "$unicode_duration" \
-    "$unicode_chars" \
-    "mixed" \
-    "$mixed_duration" \
-    "$mixed_chars" \
-    "[$((outputs * 4))]" \
-    "in seconds" \
-    "per second" \
+printf ":: %s terminal outputs per section\n" "$i"
+printf "%s;%.3f;%.0f\n%s;%.3f;%.0f\n%s;%.3f;%.0f\n%s;%.3f;%.0f\n%s;%s;%s\n%s;%.3f;%.0f\n" \
+    "ansi seq" "$ansi_duration" "$ansi_chars" \
+    "ascii" "$ascii_duration" "$ascii_chars" \
+    "unicode" "$unicode_duration" "$unicode_chars" \
+    "mixed" "$mixed_duration" "$mixed_chars" \
+    "[$((outputs * 4))]" "in seconds" "per second" \
     "total" \
     "$(calc "$ansi_duration + $ascii_duration + $unicode_duration + $mixed_duration")" \
     "$(calc "$ansi_chars + $ascii_chars + $unicode_chars + $mixed_chars")" \
