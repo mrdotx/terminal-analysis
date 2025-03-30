@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_benchmark.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-analysis
-# date:   2024-07-12T08:14:45+0200
+# date:   2025-03-29T06:04:08+0100
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C
@@ -20,6 +20,11 @@ columns_mixed="$((columns * 2 / 3))"
 [ "$1" -ge 1 ] > /dev/null 2>&1 \
     && outputs="$1" \
     || outputs=100000
+
+# color variables
+reset="\033[0m"
+bold="\033[1m"
+blue="\033[94m"
 
 # help
 script=$(basename "$0")
@@ -115,12 +120,16 @@ mixed_duration=$(calc "$end - $start")
 mixed_chars=$(calc "$columns_mixed * $outputs / $mixed_duration")
 
 # results
-printf "\033c:: %s ansi seq chars\n%b" "$ansi_num" "$ansi_string"
-printf ":: %s(+-1) ascii chars\n%b\n" "$columns" "$ascii_string"
-printf ":: %s(+-1) unicode chars\n%b\n" "$columns_unicode" "$unicode_string"
-printf ":: %s(+-1) mixed chars\n%b\n\n" "$columns_mixed" "$mixed_string"
-
-printf ":: %s terminal outputs per section\n" "$i"
+printf "\033c%b%b::%b %b%s ansi seq chars%b\n%b" \
+    "$bold" "$blue" "$reset" "$bold" "$ansi_num" "$reset" "$ansi_string"
+printf "%b%b::%b %b%s(+-1) ascii chars%b\n%b\n" \
+    "$bold" "$blue" "$reset" "$bold" "$columns" "$reset" "$ascii_string"
+printf "%b%b::%b %b%s(+-1) unicode chars%b\n%b\n" \
+    "$bold" "$blue" "$reset" "$bold" "$columns_unicode" "$reset" "$unicode_string"
+printf "%b%b::%b %b%s(+-1) mixed chars%b\n%b\n" \
+    "$bold" "$blue" "$reset" "$bold" "$columns_mixed" "$reset" "$mixed_string"
+printf "%b%b::%b %b%s terminal outputs per section%b\n" \
+    "$bold" "$blue" "$reset" "$bold" "$i" "$reset"
 printf "%s;%.3f;%.0f\n%s;%.3f;%.0f\n%s;%.3f;%.0f\n%s;%.3f;%.0f\n%s;%s;%s\n%s;%.3f;%.0f\n" \
     "ansi seq" "$ansi_duration" "$ansi_chars" \
     "ascii" "$ascii_duration" "$ascii_chars" \
