@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_colors.sh
 # author: klassiker [mrdotx]
 # github: https://github.com/mrdotx/terminal-analysis
-# date:   2024-05-09T08:30:22+0200
+# date:   2025-03-30T06:50:21+0200
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C
@@ -145,17 +145,27 @@ true_color() {
 }
 
 output() {
+    # color variables
+    reset="\033[0m"
+    bold="\033[1m"
+    green="\033[32m"
+    blue="\033[94m"
+
     [ "$column_quantity" -lt 40 ] \
         && printf "sorry, the window must be at least 40 columns wide\n" \
         && exit 1
 
-    printf ":: base colors\n"
+    printf "%b%b::%b %bbase colors%b\n" \
+        "$bold" "$blue" "$reset" "$bold" "$reset"
     base_color "$1"
-    printf ":: color palette\n"
+    printf "%b%b::%b %bcolor palette%b\n" \
+        "$bold" "$blue" "$reset" "$bold" "$reset"
     color "$1"
-    printf ":: greyscale\n"
+    printf "%b%b::%b %bgreyscale%b\n" \
+        "$bold" "$blue" "$reset" "$bold" "$reset"
     greyscale "$1"
-    printf ":: true colors\n"
+    printf "%b%b::%b %btrue colors%b\n" \
+        "$bold" "$blue" "$reset" "$bold" "$reset"
     true_color "$1"
 }
 
