@@ -2,8 +2,8 @@
 
 # path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_colors.sh
 # author: klassiker [mrdotx]
-# github: https://github.com/mrdotx/terminal-analysis
-# date:   2025-03-30T06:50:21+0200
+# url:    https://github.com/mrdotx/terminal-analysis
+# date:   2025-08-12T04:18:53+0200
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C

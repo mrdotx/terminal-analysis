@@ -2,8 +2,8 @@
 
 # path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_benchmark.sh
 # author: klassiker [mrdotx]
-# github: https://github.com/mrdotx/terminal-analysis
-# date:   2025-03-29T06:04:08+0100
+# url:    https://github.com/mrdotx/terminal-analysis
+# date:   2025-08-12T04:18:48+0200
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C
