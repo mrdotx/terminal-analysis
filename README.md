@@ -2,9 +2,9 @@
 
 shell scripts to analyze the terminal
 
-| folder  | comment                       |
-| :------ | :---------------------------- |
-| images  | images for the README.md file |
+| directory | comment                       |
+| :-------- | :---------------------------- |
+| images    | images for the README.md file |
 
 | file                  | comment                                                                |
 | :-------------------- | :--------------------------------------------------------------------- |
