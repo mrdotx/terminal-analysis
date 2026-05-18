@@ -3,7 +3,7 @@
 # path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_benchmark.sh
 # author: klassiker [mrdotx]
 # url:    https://github.com/mrdotx/terminal-analysis
-# date:   2025-08-12T04:18:48+0200
+# date:   2026-05-18T05:23:53+0200
 
 # speed up script and avoid language problems by using standard c
 LC_ALL=C
@@ -55,6 +55,11 @@ esac
 # helper functions
 calc() {
     printf "%s\n" "$*" | bc -l
+}
+
+round() {
+    # WORKAROUND: printf "%.0f" not completely converted in the dash shell
+    awk "BEGIN {printf \"%.$1f\", $2}"
 }
 
 line_fill() {
@@ -130,15 +135,15 @@ printf "%b%b::%b %b%s(+-1) mixed chars%b\n%b\n" \
     "$bold" "$blue" "$reset" "$bold" "$columns_mixed" "$reset" "$mixed_string"
 printf "%b%b::%b %b%s terminal outputs per section%b\n" \
     "$bold" "$blue" "$reset" "$bold" "$i" "$reset"
-printf "%s;%.3f;%.0f\n%s;%.3f;%.0f\n%s;%.3f;%.0f\n%s;%.3f;%.0f\n%s;%s;%s\n%s;%.3f;%.0f\n" \
-    "ansi seq" "$ansi_duration" "$ansi_chars" \
-    "ascii" "$ascii_duration" "$ascii_chars" \
-    "unicode" "$unicode_duration" "$unicode_chars" \
-    "mixed" "$mixed_duration" "$mixed_chars" \
+printf "%s;%s;%s\n%s;%s;%s\n%s;%s;%s\n%s;%s;%s\n%s;%s;%s\n%s;%s;%s\n" \
+    "ansi seq" "$(round 3 "$ansi_duration")" "$(round 0 "$ansi_chars")" \
+    "ascii" "$(round 3 "$ascii_duration")" "$(round 0 "$ascii_chars")" \
+    "unicode" "$(round 3 "$unicode_duration")" "$(round 0 "$unicode_chars")" \
+    "mixed" "$(round 3 "$mixed_duration")" "$(round 0 "$mixed_chars")" \
     "[$((outputs * 4))]" "in seconds" "per second" \
     "total" \
-    "$(calc "$ansi_duration + $ascii_duration + $unicode_duration + $mixed_duration")" \
-    "$(calc "$ansi_chars + $ascii_chars + $unicode_chars + $mixed_chars")" \
+    "$(round 3 "$(calc "$ansi_duration + $ascii_duration + $unicode_duration + $mixed_duration")")" \
+    "$(round 0 "$(calc "$ansi_chars + $ascii_chars + $unicode_chars + $mixed_chars")")" \
         | column \
             --separator ";" \
             --table \
