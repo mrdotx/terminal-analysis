@@ -1,13 +1,12 @@
 #!/bin/sh
 
-# path:   /home/klassiker/.local/share/repos/terminal-analysis/terminal_benchmark.sh
+# path:   /home/klassiker/Projects/repos/terminal-analysis/terminal_benchmark.sh
 # author: klassiker [mrdotx]
 # url:    https://github.com/mrdotx/terminal-analysis
-# date:   2026-05-18T05:23:53+0200
+# date:   2026-06-19T03:41:07+0200
 
-# speed up script and avoid language problems by using standard c
-LC_ALL=C
-LANG=C
+# use standard C locale to avoid locale-specific issues and improve performance
+export LC_ALL=C LANG=C
 
 #config
 ascii="x"
